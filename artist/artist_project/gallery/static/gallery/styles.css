@@ -1,0 +1,124 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f7f7;
+    margin: 10;
+    padding: 0;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 30px;
+    font-size: 2.5em;
+}
+
+.artist-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.artist-list li {
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.artist-list li a {
+    text-decoration: none;
+    color: #2980b9;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.artist-list li a:hover {
+    color: #1abc9c;
+}
+
+ul {
+    list-style-type: none;
+    padding: 15px;;
+    margin: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; 
+    gap: 15px;
+}
+
+ul li {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px;
+    width: 250px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+ul li:hover {
+    transform: scale(1.05);
+}
+
+ul li h2 {
+    font-size: 1.5em;
+    color: #34495e;
+}
+
+ul li p {
+    color: #7f8c8d;
+    font-size: 1em;
+    margin-top: 10px;
+}
+
+ul li img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.artist-detail {
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 900px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.artist-detail h1 {
+    font-size: 2em;
+    color: #2980b9;
+}
+
+.artist-detail p {
+    color: #7f8c8d;
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-top: 20px;
+}
+
+.artist-detail a {
+    display: inline-block;
+    background-color: #2980b9;
+    color: #ffffff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.artist-detail a:hover {
+    background-color: #1abc9c;
+}
+

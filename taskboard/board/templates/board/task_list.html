@@ -1,0 +1,23 @@
+{% extends "board/base.html" %}
+{% block content %}
+<h1>Task List</h1>
+<div class="sort-options">
+    <a href="?sort=title">Sort by Title</a> |
+    <a href="?sort=due_date">Sort by Due Date</a> |
+    <a href="?sort=is_completed">Sort by Status</a>
+</div>
+<ul class="task-list">
+    {% for task in tasks %}
+    <li class="task-item">
+        <a href="{% url 'task_detail' task.id %}">
+            {{ task.title }}
+        </a>
+        {% if task.is_completed %}
+        <span class="completed">(Completed)</span>
+        {% endif %}
+        <span class="due-date">Due: {{ task.due_date|date:"Y-m-d" }}</span>
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'task_create' %}" class="btn btn-primary">Create New Task</a>
+{% endblock %}

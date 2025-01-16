@@ -1,0 +1,258 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 0;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    height: 50px;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 5px;
+    transition: top 0.3s ease; 
+}
+
+ul{margin: 0;}
+
+.main-menu ul {
+    list-style-type: none;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.main-menu li {
+    margin-left: 10px;
+    margin-right: 15px;
+}
+
+.main-menu a {
+    color: white;
+    text-decoration: none;
+}
+
+.main-menu a:hover {
+    text-decoration: underline;
+}
+
+.menu-icon {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.menu-icon:hover {
+    color: #aaa;
+}
+
+.side-menu {
+    position: fixed;
+    left: -250px;  
+    width: 250px;
+    height: 100%;
+    background-color: #333;
+    transition: left 0.3s ease;
+    z-index: 999;
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu ul {
+    list-style: none;
+    padding: 20px;
+}
+
+.side-menu ul li {
+    margin: 15px ;
+}
+
+.side-menu ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.side-menu ul li a:hover {
+    text-decoration: underline;
+}
+.side-menu.open {
+    left: 0;  
+}
+.side-menu.open ~ header {
+    top: 200px; 
+}
+
+@media screen and (max-width: 768px) {
+    .main-menu {
+        display: flex;
+        justify-content: space-between;
+    }
+    .main-menu li {
+        margin-right: 10px;
+    }
+    .open-btn {
+        font-size: 20px;
+        background-color: #555555;
+        margin: 3px;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .open-btn:hover {
+        background-color: #8e8b8b;
+    }
+    .side-menu {
+        width: 200px;
+    }
+    .side-menu.open ~ header {
+        top: 200px; 
+    }
+}
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    font-size: 20px;
+    background-color: #555555;
+    margin: 5px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #8e8b8b;
+} 
+
+.content {
+    margin-left: 50px;
+    padding: 20px;
+}
+
+.task-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.task-item a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #333;
+}
+
+.task-item a:hover {
+    text-decoration: underline;
+}
+
+.completed {
+    color: green;
+    font-style: italic;
+}
+
+.due-date {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.btn {
+    padding: 10px 10px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.btn-primary {
+    background-color: #024288;
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #023770;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn-light {
+    background-color: #f8f9fa;
+    color: black;
+    border: 1px solid #ddd;
+}
+
+.task-form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.task-form label {
+    font-weight: bold;
+}
+
+.task-form input, .task-form textarea, .task-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.task-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0d0f29;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+}

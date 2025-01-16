@@ -1,0 +1,16 @@
+{% extends 'board/base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h2>User Profile</h2>
+    {% if user.profile.avatar %}
+        <img src="{{% static user.profile.avatar.url %}}" alt="Avatar">
+    {% else %}
+        <img src="https://www.meme-arsenal.com/memes/9deabcb50a53c324b3a4981528215040.jpg" alt="Default Avatar">
+    {% endif %}
+        <p>Username: {{ user.username }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>First Name: {{ user.first_name }}</p>
+        <p>Last Name: {{ user.last_name }}</p>
+        <a href="{% url 'edit_profile' %}">Edit Profile</a>  </div>
+{% endblock %}

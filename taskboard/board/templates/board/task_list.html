@@ -17,6 +17,8 @@
         {% endif %}
         <span class="due-date">Due: {{ task.due_date|date:"Y-m-d" }}</span>
     </li>
+    {% empty %}
+    <li>No tasks available.</li>
     {% endfor %}
 </ul>
 <a href="{% url 'task_create' %}" class="btn btn-primary">Create New Task</a>

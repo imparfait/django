@@ -1,10 +1,41 @@
 {% extends "board/base.html" %}
 {% block content %}
 <h1>{% if task %}Edit{% else %}Create{% endif %} Task</h1>
-<form method="post" class="task-form">
+<div class="task-form-container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_title">Title:</label>
+            {{ form.title }}
+        </div>
+        <div class="form-group">
+            <label for="id_description">Description:</label>
+            {{ form.description }}
+        </div>
+        <div class="form-group">
+            <label for="id_due_date">Due Date:</label>
+            {{ form.due_date }}
+        </div>
+        <div class="form-group">
+            <label for="id_event_date">Event Date:</label>
+            {{ form.event_date }}
+        </div>
+        <div class="form-group checkbox-group">
+            <label for="id_is_completed">Completed:</label>
+            {{ form.is_completed }}
+        </div>
+        <div class="form-group">
+            <label for="id_list">Task List:</label>
+            {{ form.list }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{% url 'task_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% comment %} <form method="post" class="task-form">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">{% if task %}Update{% else %}Create{% endif %} Task</button>
     <a href="{% url 'task_list' %}" class="btn btn-light">Cancel</a>
-</form>
+</form> {% endcomment %}
 {% endblock %}

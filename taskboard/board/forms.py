@@ -15,9 +15,10 @@ class TaskForm(forms.ModelForm):
             'due_date': forms.DateInput(attrs={'type': 'date'}),
             'event_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),}
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # Забираємо параметр user
         super().__init__(*args, **kwargs)
         if not self.instance.list:
-            self.instance.list = TaskList.objects.get_or_create(user=self.instance.user, name="Default List")[0]
+            self.instance.list = TaskList.objects.get_or_create(user=self.user, name="Default List")[0]
 
 class TaskListForm(forms.ModelForm):
     class Meta:

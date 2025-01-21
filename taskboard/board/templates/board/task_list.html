@@ -9,13 +9,17 @@
 <ul class="task-list">
     {% for task in tasks %}
     <li class="task-item">
-        <a href="{% url 'task_detail' task.id %}">
-            {{ task.title }}
+        <a href="{% url 'task_detail' task.id %}" class="{% if task.is_completed %}completed{% endif %}">
+            <span style="{% if task.is_completed %}text-decoration: line-through;{% endif %}">{{ task.title }}</span>
         </a>
         {% if task.is_completed %}
         <span class="completed">(Completed)</span>
         {% endif %}
         <span class="due-date">Due: {{ task.due_date|date:"Y-m-d" }}</span>
+        <form action="{% url 'task_toggle' task.id %}" method="post" style="margin: 0;">
+            {% csrf_token %}
+            <input type="checkbox" name="is_completed" {% if task.is_completed %}checked{% endif %} onchange="this.form.submit()">
+        </form>
     </li>
     {% empty %}
     <li>No tasks available.</li>

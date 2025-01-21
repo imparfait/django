@@ -147,6 +147,8 @@ button:hover {
 .task-list {
     list-style-type: none;
     padding: 0;
+    max-width: 600px;
+    margin: 20px auto;
 }
 
 .task-item {
@@ -171,7 +173,11 @@ button:hover {
 }
 
 .completed {
-    color: green;
+    color: #888;
+    background-color: #f9f9f9; 
+    padding: 2px 4px;
+    border-radius: 3px;
+    /* color: green; */
     font-style: italic;
 }
 .sort-options {

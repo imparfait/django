@@ -1,7 +1,0 @@
-{% load static %}
-<link rel="stylesheet" href="{% static 'gallery/styles.css' %}">
-<div class="artist-detail">
-    <h1>{{ artist.name }}</h1>
-    <p>{{ artist.bio }}</p>
-    <a href="{% url 'artist_gallery' artist.id %}">View Gallery</a>
-</div>

@@ -24,14 +24,14 @@ def task_detail(request, pk):
 @login_required
 def task_create(request):
     if request.method == "POST":
-        form = TaskForm(request.POST)
+        form = TaskForm(request.POST, user=request.user)
         if form.is_valid():
             task = form.save(commit=False)
             task.user = request.user
             task.save()
             return redirect('task_list')
     else:
-        form = TaskForm()
+        form = TaskForm(user=request.user)
     return render(request, 'board/task_form.html', {'form': form})
 
 @login_required
@@ -51,7 +51,7 @@ def task_delete(request, pk):
     task = get_object_or_404(Task, pk=pk, user=request.user)
     if request.method == 'POST':
         task.delete()
-        return redirect('board/task_list')
+        return redirect('task_list')
     return render(request, 'board/task_confirm_delete.html', {'task': task})
 
 @login_required
@@ -103,22 +103,6 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'board/register.html', {'form': form})
 
-# def user_login(request):
-#     if request.method == 'POST':
-#         form = LoginForm(request, data=request.POST)
-#         if form.is_valid():
-#             username = form.cleaned_data['username']
-#             password = form.cleaned_data['password']
-#             user = authenticate(request, username=username, password=password)
-#             if user is not None:
-#                 login(request, user)
-#                 return redirect('task_list')  
-#             else:
-#                 form.add_error(None, "Invalid username or password")
-#     else:
-#         form = LoginForm()
-#     return render(request, 'login.html', {'form': form})
-
 def user_logout(request):
     logout(request)
     return redirect('task_list')
@@ -139,3 +123,10 @@ def create_task_list(request):
 def calendar_view(request):
     tasks = Task.objects.filter(user=request.user, event_date__gte=now()).order_by('event_date')
     return render(request, 'board/calendar.html', {'tasks': tasks})
+
+def task_toggle(request, task_id):
+    task = get_object_or_404(Task, id=task_id, user=request.user)  # Перевіряємо, що задача належить користувачу
+    if request.method == 'POST':
+        task.is_completed = not task.is_completed
+        task.save()
+    return redirect('task_list')

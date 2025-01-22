@@ -140,7 +140,8 @@ button:hover {
 } 
 
 .content {
-    margin-left: 50px;
+    margin-left: 50px; 
+    margin-right: 50px;
     padding: 20px;
 }
 
@@ -148,7 +149,6 @@ button:hover {
     list-style-type: none;
     padding: 0;
     max-width: 600px;
-    margin: 20px auto;
 }
 
 .task-item {
@@ -193,6 +193,7 @@ button:hover {
 
 .sort-options a:hover {
     text-decoration: underline;
+    text-decoration-color: #023770;
 }
 .due-date {
     font-size: 0.9em;

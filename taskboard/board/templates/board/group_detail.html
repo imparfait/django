@@ -1,11 +1,17 @@
 {% extends "board/base.html" %}
 {% block content %}
-<h1>Group: {{ group.name }}</h1>
-<h2>Members</h2>
+<h1>{{ group.name }}</h1>
+<p>{{ group.description }}</p>
+<h3>Members:</h3>
 <ul>
     {% for member in group.members.all %}
-    <li>{{ member.username }} ({{ member.email }})</li>
+        <li>
+            <a href="{% url 'user_profile' member.username %}">{{ member.username }}</a>
+        </li>
     {% endfor %}
 </ul>
-<a href="{% url 'group_invite' group.id %}" class="btn btn-primary">Invite Members</a>
+{% if group.created_by == user %}
+    <a href="{% url 'edit_group' group.pk %}" class="btn btn-warning">Edit Group</a>
+{% endif %}
+<a href="{% url 'my_groups' %}" class="btn btn-secondary">Back</a>
 {% endblock %}

@@ -1,11 +1,9 @@
-{% extends 'board/base.html' %}
-
+{% extends "board/base.html" %}
 {% block content %}
-<h1>Create Task List</h1>
 <form method="post">
     {% csrf_token %}
     <div class="form-group">
-        <label for="id_name">Name:</label>
+        <label for="id_name">Group Name:</label>
         {{ form.name }}
     </div>
     <div class="form-group">
@@ -13,10 +11,10 @@
         {{ form.description }}
     </div>
     <div class="form-group">
-        <label for="id_color">Color:</label>
-        {{ form.color }}
+        <label for="id_members">Members:</label>
+        {{ form.members }}
     </div>
-    <button class="btn btn-primary" type="submit">Create</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{% url 'groups_list' %}" class="btn btn-secondary">Cancel</a>
 </form>
-<a href="{% url 'task_list' %}" class="btn btn-secondary">Back</a>
 {% endblock %}

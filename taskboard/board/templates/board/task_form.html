@@ -28,14 +28,12 @@
             <label for="id_list">Task List:</label>
             {{ form.list }}
         </div>
+        <div class="form-group">
+            <label for="id_group">Group:</label>
+            {{ form.group }}
+        </div>
         <button type="submit" class="btn btn-primary">Save</button>
         <a href="{% url 'task_list' %}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
-{% comment %} <form method="post" class="task-form">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">{% if task %}Update{% else %}Create{% endif %} Task</button>
-    <a href="{% url 'task_list' %}" class="btn btn-light">Cancel</a>
-</form> {% endcomment %}
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Task, TaskList, Group
-from .forms import LoginForm, TaskForm, TaskListForm, GroupInviteForm, EditProfileForm
+from .models import Task, TaskGroup, TaskList
+from .forms import LoginForm, TaskForm, TaskGroupForm, TaskListForm, EditProfileForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth import logout
 from django.utils.timezone import now
@@ -11,11 +11,21 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def task_list(request):
-    sort = request.GET.get('sort', 'title')
+    sort = request.GET.get('sort', 'title') 
+    order = request.GET.get('order', 'asc') 
     if sort not in ['title', 'due_date', 'is_completed']:
         sort = 'title'
+    if order not in ['asc', 'desc']:
+        order = 'asc'
+    if order == 'desc':
+        sort = f'-{sort}'
     tasks = Task.objects.filter(user=request.user).order_by(sort)
-    return render(request, 'board/task_list.html', {'tasks': tasks})
+    context = {
+        'tasks': tasks,
+        'current_sort': sort.lstrip('-'),  
+        'current_order': order,
+    }
+    return render(request, 'board/task_list.html', context)
 
 def task_detail(request, pk):
     task = get_object_or_404(Task, pk=pk)
@@ -24,7 +34,7 @@ def task_detail(request, pk):
 @login_required
 def task_create(request):
     if request.method == "POST":
-        form = TaskForm(request.POST, user=request.user)
+        form = TaskForm(user=request.user, data=request.POST)
         if form.is_valid():
             task = form.save(commit=False)
             task.user = request.user
@@ -71,25 +81,40 @@ def edit_profile(request):
         form = EditProfileForm(instance=request.user)  
     return render(request, 'board/edit_profile.html', {'form': form})
 
-def group_invite(request, group_id):
-    group = get_object_or_404(Group, id=group_id)
+@login_required
+def create_group(request):
     if request.method == 'POST':
-        form = GroupInviteForm(request.POST)
+        form = TaskGroupForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
-            user = User.objects.filter(email=email).first()
-            if user:
-                group.members.add(user)
-                messages.success(request, f"User {user.username} added to group.")
-            else:
-                messages.error(request, "User with this email does not exist.")
-            return redirect('group_detail', group_id=group.id)
+            group = form.save(commit=False)
+            group.created_by = request.user
+            group.save()
+            form.save_m2m()  
+            return redirect('groups_list') 
     else:
-        form = GroupInviteForm()
-    return render(request, 'board/group_invite.html', {'form': form, 'group': group})
+        form = TaskGroupForm()
+    return render(request, 'board/create_group.html', {'form': form})
 
-def group_detail(request, group_id):
-    group = get_object_or_404(Group, id=group_id)
+@login_required
+def edit_group(request, pk):
+    group = get_object_or_404(TaskGroup, pk=pk, created_by=request.user)
+    if request.method == 'POST':
+        form = TaskGroupForm(request.POST, instance=group)
+        if form.is_valid():
+            form.save()
+            return redirect('task_list')
+    else:
+        form = TaskGroupForm(instance=group)
+    return render(request, 'board/group_form.html', {'form': form})
+
+@login_required
+def groups_list(request):
+    groups = TaskGroup.objects.filter(members=request.user)
+    return render(request, 'board/groups_list.html', {'groups': groups})
+
+@login_required
+def group_detail(request, pk):
+    group = get_object_or_404(TaskGroup, pk=pk)
     return render(request, 'board/group_detail.html', {'group': group})
 
 def register(request):
@@ -107,7 +132,7 @@ def user_logout(request):
     logout(request)
     return redirect('task_list')
 
-def create_task_list(request):
+def task_list_create(request):
     if request.method == 'POST':
         form = TaskListForm(request.POST)
         if form.is_valid():
@@ -117,7 +142,6 @@ def create_task_list(request):
             return redirect('task_list')
     else:
         form = TaskListForm()
-
     return render(request, 'board/task_list_form.html', {'form': form})
 
 def calendar_view(request):
@@ -125,8 +149,13 @@ def calendar_view(request):
     return render(request, 'board/calendar.html', {'tasks': tasks})
 
 def task_toggle(request, task_id):
-    task = get_object_or_404(Task, id=task_id, user=request.user)  # Перевіряємо, що задача належить користувачу
+    task = get_object_or_404(Task, id=task_id, user=request.user) 
     if request.method == 'POST':
         task.is_completed = not task.is_completed
         task.save()
     return redirect('task_list')
+
+@login_required
+def user_profile(request, username):
+    user = get_object_or_404(User, username=username)
+    return render(request, 'board/user_profile.html', {'profile_user': user})

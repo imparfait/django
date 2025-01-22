@@ -7,7 +7,7 @@
 <a href="{% url 'task_edit' task.id %}" class="btn btn-secondary">Edit Task</a>
 <form method="post" action="{% url 'task_delete' task.id %}" style="display:inline;">
     {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Delete Task</button>
+    <button type="submit" style=" background-color: #dc3545" class="btn btn-danger">Delete</button>
 </form>
-<a href="{% url 'task_list' %}" class="btn btn-light">Back to List</a>
+<a href="{% url 'task_list' %}" class="btn btn-primary">Back</a>
 {% endblock %}

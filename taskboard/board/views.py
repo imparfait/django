@@ -117,7 +117,7 @@ def edit_group(request, pk):
         form = TaskGroupForm(request.POST, instance=group)
         if form.is_valid():
             form.save()
-            return redirect('task_list')
+            return redirect('groups_list')
     else:
         form = TaskGroupForm(instance=group)
     return render(request, 'board/create_group.html', {'form': form})
@@ -175,7 +175,7 @@ def task_list_create(request):
 def calendar_data(request):
     year = request.GET.get('year')
     month = request.GET.get('month')
-    tasks = Task.objects.filter(event_date__year=year, event_date__month=month) 
+    tasks = Task.objects.filter(user=request.user,event_date__year=year, event_date__month=month) 
     tasks_data = {}
     for task in tasks:
         task_day = task.event_date.day

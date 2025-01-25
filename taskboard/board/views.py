@@ -1,7 +1,9 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Task, TaskGroup, TaskList
-from .forms import LoginForm, TaskForm, TaskGroupForm, TaskListForm, EditProfileForm
-from django.contrib.auth import login, authenticate
+from django.urls import reverse
+from .models import Task, TaskGroup, TaskImage, TaskList
+from .forms import AddMemberForm, TaskForm, TaskGroupForm, TaskListForm, EditProfileForm
+from django.db.models import Prefetch
 from django.contrib.auth import logout
 from django.utils.timezone import now
 from django.contrib.auth.forms import UserCreationForm
@@ -19,13 +21,14 @@ def task_list(request):
         order = 'asc'
     if order == 'desc':
         sort = f'-{sort}'
-    tasks = Task.objects.filter(user=request.user).order_by(sort)
-    context = {
-        'tasks': tasks,
-        'current_sort': sort.lstrip('-'),  
-        'current_order': order,
-    }
-    return render(request, 'board/task_list.html', context)
+    task_lists = TaskList.objects.filter(user=request.user).prefetch_related(
+        Prefetch(
+            'tasks',
+            queryset=Task.objects.filter(user=request.user).order_by(sort),
+            to_attr='sorted_tasks'
+        )
+    )
+    return render(request, 'board/task_list.html',{'task_lists': task_lists, 'sort': sort, 'order': order})
 
 def task_detail(request, pk):
     task = get_object_or_404(Task, pk=pk)
@@ -34,27 +37,39 @@ def task_detail(request, pk):
 @login_required
 def task_create(request):
     if request.method == "POST":
-        form = TaskForm(user=request.user, data=request.POST)
-        if form.is_valid():
-            task = form.save(commit=False)
+        task_form  = TaskForm( user=request.user, data=request.POST)
+        if task_form.is_valid():
+            task = task_form.save(commit=False)
             task.user = request.user
             task.save()
+            images = request.FILES.getlist('images[]')
+            for image in images:
+                TaskImage.objects.create(task=task, image=image)
             return redirect('task_list')
     else:
-        form = TaskForm(user=request.user)
-    return render(request, 'board/task_form.html', {'form': form})
+        task_form =  TaskForm(user=request.user)
+    return render(request, 'board/task_form.html', {'task_form': task_form,})
 
 @login_required
 def task_edit(request, pk):
-    task = get_object_or_404(Task, pk=pk)
+    task = get_object_or_404(Task, id=pk, user=request.user)
     if request.method == "POST":
-        form = TaskForm(request.POST, instance=task)
+        form = TaskForm(request.POST, request.FILES, instance=task, user=request.user)
         if form.is_valid():
             form.save()
-            return redirect('task_list')
+            images = request.FILES.getlist('images[]')
+            for image in images:
+                TaskImage.objects.create(task=task, image=image)
+            return redirect("task_detail", pk=task.id)
     else:
-        form = TaskForm(instance=task)
-    return render(request, 'board/task_form.html', {'form': form})
+        form = TaskForm(instance=task, user=request.user)
+    return render(request, "board/task_form.html", {"task_form": form, "task": task})
+
+def delete_task_image(request, image_id):
+    image = get_object_or_404(TaskImage, id=image_id)
+    if image.task.user == request.user: 
+        image.delete()
+    return redirect('task_edit', pk=image.task.pk)
 
 @login_required
 def task_delete(request, pk):
@@ -105,7 +120,7 @@ def edit_group(request, pk):
             return redirect('task_list')
     else:
         form = TaskGroupForm(instance=group)
-    return render(request, 'board/group_form.html', {'form': form})
+    return render(request, 'board/create_group.html', {'form': form})
 
 @login_required
 def groups_list(request):
@@ -115,7 +130,19 @@ def groups_list(request):
 @login_required
 def group_detail(request, pk):
     group = get_object_or_404(TaskGroup, pk=pk)
-    return render(request, 'board/group_detail.html', {'group': group})
+    if request.method == "POST":
+        form = AddMemberForm(request.POST)
+        if form.is_valid():
+            user_to_add = form.cleaned_data['user']
+            if user_to_add != request.user:  
+                group.members.add(user_to_add)
+                return redirect('group_detail', pk=group.pk)
+    else:
+        form = AddMemberForm()
+    return render(request, 'board/group_detail.html', {
+        'group': group,
+        'form': form
+    })
 
 def register(request):
     if request.method == 'POST':
@@ -144,9 +171,22 @@ def task_list_create(request):
         form = TaskListForm()
     return render(request, 'board/task_list_form.html', {'form': form})
 
-def calendar_view(request):
-    tasks = Task.objects.filter(user=request.user, event_date__gte=now()).order_by('event_date')
-    return render(request, 'board/calendar.html', {'tasks': tasks})
+@login_required
+def calendar_data(request):
+    year = request.GET.get('year')
+    month = request.GET.get('month')
+    tasks = Task.objects.filter(event_date__year=year, event_date__month=month) 
+    tasks_data = {}
+    for task in tasks:
+        task_day = task.event_date.day
+        if task_day not in tasks_data:
+            tasks_data[task_day] = []
+        tasks_data[task_day].append({
+            'title': task.title,
+            'url': reverse('task_detail', args=[task.pk]),
+            'event_date': task.event_date.strftime('%Y-%m-%d')
+        })
+    return JsonResponse(tasks_data)
 
 def task_toggle(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user) 

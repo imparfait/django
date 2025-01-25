@@ -140,15 +140,15 @@ button:hover {
 } 
 
 .content {
-    margin-left: 50px; 
-    margin-right: 50px;
+    margin-left: 30px; 
+    margin-right: 310px;
     padding: 20px;
 }
 
 .task-list {
     list-style-type: none;
     padding: 0;
-    max-width: 600px;
+    max-width: 1400px; 
 }
 
 .task-item {
@@ -177,7 +177,6 @@ button:hover {
     background-color: #f9f9f9; 
     padding: 2px 4px;
     border-radius: 3px;
-    /* color: green; */
     font-style: italic;
 }
 .sort-options {
@@ -207,7 +206,7 @@ button:hover {
     font-size: 1em;
     cursor: pointer;
     display: inline-block;
-    margin-right: 10px;
+    margin: 10px;
 }
 
 .btn-primary {
@@ -319,23 +318,102 @@ button:hover {
     background-color: #5a6268;
 }
 
-.invite-form {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
+.btn-edit {
+    background-color: #1f27cb;
+}
+
+.btn-edit:hover {
+    background-color: #0f1483;
+}
+.btn-success {
+    background-color: #17b39e;
+}
+
+.btn-success:hover {
+    background-color: #0f8777;
+}
+
+img {
+    width: 100px;
+    height: auto;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+img:hover {
+    transform: scale(1.1);
+}
+
+.image-container {
+    display: inline-block;  
+    position: relative;
+    margin-right: 10px;
+}
+
+.image-container .btn-danger {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 12px;
+    padding: 2px 5px;
+}
+.custom {
+    display: block !important; 
+    margin-top: 10px;       
+}
+
+.group-item{
+    width: 250px;
+    align-items: center;
+    padding: 10px;
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
-
-.invite-form label {
+.sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 280px;
+    height: 100%;
+    background: #f8f9fa;
+    border-left: 1px solid #ddd;
+    padding: 15px;
+    overflow-y: auto;
+}
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    padding: 10px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+}
+#calendar div {
+    text-align: center;
+    padding: 5px;
+    border-radius: 50%;
+    background: #f0f0f0;
+}
+.highlighted-day {
+    color: rgb(238, 38, 38);
     font-weight: bold;
 }
+#task-list {
+    list-style-type: none;
+    padding: 0;
+}
 
-.invite-form input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+#task-list li {
+    margin: 10px 0;
+}
+#task-list a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+#task-list a:hover {
+    text-decoration: underline;
 }

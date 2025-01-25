@@ -3,8 +3,19 @@
 <h1>Task: {{ task.title }}</h1>
 <p><strong>Description:</strong> {{ task.description }}</p>
 <p><strong>Due Date:</strong> {{ task.due_date|date:"Y-m-d" }}</p>
+<p><strong>Event Date:</strong> {{ task.event_date|date:"Y-m-d H:i" }}</p>
 <p><strong>Status:</strong> {% if task.is_completed %}Completed{% else %}Not Completed{% endif %}</p>
-<a href="{% url 'task_edit' task.id %}" class="btn btn-secondary">Edit Task</a>
+{%if task.images.all %}    
+    <h3>Images:</h3>
+    <div class="task-images">
+        {% for image in task.images.all %}
+            <a href="{{ image.image.url }}" target="_blank">
+                <img src="{{ image.image.url }}" alt="Task Image" >
+            </a>
+        {% endfor %}
+    </div>    
+{%endif%}
+<a href="{% url 'task_edit' task.id %}" class="btn btn-edit">Edit Task</a>
 <form method="post" action="{% url 'task_delete' task.id %}" style="display:inline;">
     {% csrf_token %}
     <button type="submit" style=" background-color: #dc3545" class="btn btn-danger">Delete</button>

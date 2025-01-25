@@ -7,14 +7,19 @@ class LoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Username'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
 
+class AddMemberForm(forms.Form):
+    user = forms.ModelChoiceField(queryset=User.objects.all(), label="Select User")
+
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['title', 'description', 'due_date', 'event_date', 'is_completed','list', 'group']
+        fields = ['title', 'description', 'due_date', 'event_date', 'is_completed','list', "group"]
         widgets = {
+            'list': forms.Select(attrs={'class': 'form-control'}),
             'due_date': forms.DateInput(attrs={'type': 'date'}),
             'event_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),}
-    def __init__(self, user=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
         if user:
             self.fields['list'].queryset = TaskList.objects.filter(user=user)
@@ -22,7 +27,6 @@ class TaskForm(forms.ModelForm):
         else:
             self.fields['list'].queryset = TaskList.objects.none()
             self.fields['group'].queryset = TaskGroup.objects.none()
-
 
 class TaskListForm(forms.ModelForm):
     class Meta:
@@ -55,9 +59,11 @@ class RegisterForm(forms.ModelForm):
         return cleaned_data
     
 class TaskGroupForm(forms.ModelForm):
+    members = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
     class Meta:
         model = TaskGroup
         fields = ['name', 'description', 'members']
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['members'].widget = forms.CheckboxSelectMultiple()

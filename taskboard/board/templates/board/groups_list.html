@@ -5,13 +5,12 @@
     {% for group in groups %}
         <div class="group-item">
             <h3>{{ group.name }}</h3>
-            <p>{{ group.description }}</p>
-            <a href="{% url 'group_detail' group.pk %}" class="btn btn-info">View Group</a>
+            <a href="{% url 'group_detail' group.pk %}" class="btn btn-secondary" style="margin: 5px;">View Group</a>
             {% if group.created_by == user %}
-                <a href="{% url 'edit_group' group.pk %}" class="btn btn-warning">Edit Group</a>
+                <a href="{% url 'edit_group' group.pk %}" class="btn btn-edit" style="margin: 5px;">Edit Group</a>
             {% endif %}
         </div>
     {% endfor %}
-    <a href="{% url 'create_group' %}" class="btn btn-danger">Create group</a>
+    <a href="{% url 'create_group' %}" class="btn btn-primary" style="margin: 8px;">Create group</a>
 </div>
 {% endblock %}

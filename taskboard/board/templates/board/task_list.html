@@ -1,46 +1,45 @@
 {% extends "board/base.html" %}
 {% block content %}
-<h1>Task List</h1>
+<h1>Tasks</h1>
 <div class="sort-options">
-    <a href="?sort=title&order=asc">
-        <span style="color:#023770">Title ↑</span>
-    </a>
-    |
-    <a href="?sort=title&order=desc">
-        <span style="color:#023770">Title ↓</span>
-    </a>
-    <a href="?sort=due_date&order=asc">
-        <span style="color:#023770">Due Date ↑</span>
-    </a>
-    |
-    <a href="?sort=due_date&order=desc">
-        <span style="color:#023770">Due Date ↓</span>
-    </a>
-    <a href="?sort=is_completed"><span style="color:#023770">Sort by Status</span></a> 
+    <span>Sort by:</span>
+    <a href="?sort=title&order=asc" class="{% if sort == 'title' and order == 'asc' %}active{% endif %}"> <span style="color:#023770">Title ↑</span></a>
+    <a href="?sort=title&order=desc" class="{% if sort == '-title' %}active{% endif %}"> <span style="color:#023770">Title ↓</span></a>
+    <a href="?sort=due_date&order=asc" class="{% if sort == 'due_date' and order == 'asc' %}active{% endif %}"> <span style="color:#023770">Due Date ↑</span></a>
+    <a href="?sort=due_date&order=desc" class="{% if sort == '-due_date' %}active{% endif %}"> <span style="color:#023770">Due Date ↓</span></a>
+    <a href="?sort=is_completed&order=asc" class="{% if sort == 'is_completed' and order == 'asc' %}active{% endif %}"> <span style="color:#023770">Status ↑</span></a>
+    <a href="?sort=is_completed&order=desc" class="{% if sort == '-is_completed' %}active{% endif %}"> <span style="color:#023770">Status ↓</span></a>
 </div>
-<ul class="task-list">
-    {% for task in tasks %}
-    <li class="task-item">
-        <span style="display: inline-block; width: 10px; height: 10px; 
-            background-color: {{ task.list.color }}; 
-            border-radius: 50%; margin-right: 5px;">
-        </span>
-        <a href="{% url 'task_detail' task.id %}" class="{% if task.is_completed %}completed{% endif %}">
-            <span style="{% if task.is_completed %}text-decoration: line-through; color: #888{% endif %}">{{ task.title }}</span>
-        </a>
-        {% if task.is_completed %}
-        <span class="completed">(Completed)</span>
+{% for task_list in task_lists %}
+    <div class="task-list">
+        <h4 >{{ task_list.name }}</h4>
+        {% if task_list.sorted_tasks %}
+            <ul>
+            {% for task in task_list.sorted_tasks %}
+            <li class="task-item">
+                <span style="display: inline-block; width: 10px; height: 10px; 
+                    background-color: {{ task.list.color }}; 
+                    border-radius: 50%; margin-right: 5px;">
+                </span>
+                <a href="{% url 'task_detail' task.id %}" class="{% if task.is_completed %}completed{% endif %}">
+                    <span style="{% if task.is_completed %}text-decoration: line-through; color: #888{% endif %}">{{ task.title }}</span>
+                </a>
+                {% if task.is_completed %}
+                <span class="completed">(Completed)</span>
+                {% endif %}
+                <span class="due-date">Due:{% if task.due_date %}{{ task.due_date|date:"Y-m-d" }}{% else %} No date{% endif %}</span>
+                <form action="{% url 'task_toggle' task.id %}" method="post" style="margin: 0;">
+                    {% csrf_token %}
+                    <input type="checkbox" name="is_completed" {% if task.is_completed %}checked{% endif %} onchange="this.form.submit()" style=" width: 15px;height: 15px;">
+                </form>
+            </li>
+            {%endfor%}
+        </ul>
+        {% else %}
+            <p style=" margin-left:45px;">No tasks in this list.</p>
         {% endif %}
-        <span class="due-date">Due: {{ task.due_date|date:"Y-m-d" }}</span>
-        <form action="{% url 'task_toggle' task.id %}" method="post" style="margin: 0;">
-            {% csrf_token %}
-            <input type="checkbox" name="is_completed" {% if task.is_completed %}checked{% endif %} onchange="this.form.submit()" style=" width: 15px;height: 15px;">
-        </form>
-    </li>
-    {% empty %}
-    <li>No tasks available.</li>
-    {% endfor %}
-</ul>
+    </div>
+{% endfor %}
 <a href="{% url 'task_create' %}" class="btn btn-primary">Create New Task</a>
 <a href="{% url 'task_list_create' %}" class="btn btn-primary">Create New List</a>
 {% endblock %}

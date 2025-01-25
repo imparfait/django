@@ -1,7 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 class TaskList(models.Model):
     COLOR_CHOICES = [
@@ -14,7 +12,7 @@ class TaskList(models.Model):
     ]
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    color = models.CharField(max_length=7, choices=COLOR_CHOICES, default="#FFFFFF")
+    color = models.CharField(max_length=7, choices=COLOR_CHOICES, default="#000000")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="task_lists")
     def __str__(self):
         return self.name
@@ -23,7 +21,7 @@ class TaskGroup(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     members = models.ManyToManyField(User, related_name="task_groups", blank=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_task_groups")
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_group")
     def __str__(self):
         return self.name
     
@@ -49,6 +47,10 @@ class Task(models.Model):
             default_list, created = TaskList.objects.get_or_create(user=self.user, name="To Do List")
             self.list = default_list
         super(Task, self).save(*args, **kwargs)
+
+class TaskImage(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='task_images/')
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

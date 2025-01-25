@@ -11,7 +11,13 @@
     {% endfor %}
 </ul>
 {% if group.created_by == user %}
-    <a href="{% url 'edit_group' group.pk %}" class="btn btn-warning">Edit Group</a>
+    <h4>Add Member</h4>
+    <form method="post" style="margin: 5px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success" >Add Member</button>
+    </form>
+    <a href="{% url 'edit_group' group.pk %}" class="btn btn-edit">Edit Group</a>
 {% endif %}
-<a href="{% url 'my_groups' %}" class="btn btn-secondary">Back</a>
+<a href="{% url 'groups_list' %}" class="btn btn-secondary">Back</a>
 {% endblock %}

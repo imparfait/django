@@ -11,6 +11,52 @@
             const menu = document.getElementById('sideMenu');
             menu.classList.toggle('open'); 
         }
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = new Date();
+            const calendar = document.getElementById("calendar");
+            const taskList = document.getElementById("task-list");
+            const selectedDate = document.getElementById("selected-date");
+            function renderCalendar() {
+                calendar.innerHTML = "";
+                const year = today.getFullYear();
+                const month = today.getMonth();
+                fetch(`/tasks/calendar-data/?year=${year}&month=${month + 1}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const firstDay = new Date(year, month, 1);
+                        const lastDay = new Date(year, month + 1, 0);
+                        const daysInMonth = lastDay.getDate();
+                        for (let i = 1; i <= daysInMonth; i++) {
+                            const date = new Date(year, month, i);
+                            const dayElement = document.createElement("div");
+                            dayElement.textContent = i;
+                            dayElement.style.cursor = "pointer";
+                            if (data[i]) {
+                                dayElement.classList.add("highlighted-day");
+                            }
+                            dayElement.addEventListener("click", () => {
+                                selectedDate.textContent = date.toLocaleDateString();
+                                taskList.innerHTML = "";
+                                if (data[i]) {
+                                    data[i].forEach((task) => {
+                                        const taskItem = document.createElement("li");
+                                        const taskLink = document.createElement("a");
+                                        taskLink.href = task.url;  
+                                        taskLink.textContent = task.title;
+                                        taskLink.style.color = "black";
+                                        taskItem.appendChild(taskLink);
+                                        taskList.appendChild(taskItem);
+                                    });
+                                } else {
+                                    taskList.innerHTML = "<li>No tasks</li>";
+                                }
+                            }); 
+                            calendar.appendChild(dayElement);
+                        }
+                    });
+            }
+            renderCalendar();
+        });    
     </script>
 </head>
 <body>
@@ -40,6 +86,15 @@
             {% endif %}
         </ul>
     </div>
+    <div class="sidebar">
+        <h3>Calendar</h3>
+        <div id="calendar"></div>
+        <div id="tasks-for-date" class="mt-4">
+            <h5>Events on <span id="selected-date"></span>:</h5>
+            <ul id="task-list"></ul>
+        </div>
+    </div>
+    
     <div class="content">
         {% block content %}
         {% endblock %}
